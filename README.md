@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Three.js Editor – Next.js + TypeScript
 
-## Getting Started
+This project is a simplified reimplementation of the **Three.js Editor** example, built with **Next.js**, **TypeScript**, and **Three.js**.
 
-First, run the development server:
+The goal is not to fully reproduce the entire editor UI, but to demonstrate:
+- clean architecture,
+- proper lifecycle management,
+- and a correct migration from imperative JavaScript to React + TypeScript.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Preview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![Editor Preview](./resultat.png)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> The scene renders a basic Three.js setup (scene, camera, lighting, rotating cube) to validate rendering, animation, and lifecycle handling.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js (App Router)**
+- **TypeScript**
+- **Three.js**
+- **Tailwind CSS**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```txt
+app/
+  page.tsx            # Server Component entry
+components/
+  ThreeEditor.tsx     # Client Component orchestrating the editor
+hooks/
+  useThreeScene.ts    # Scene, camera, objects setup
+  useThreeRenderer.ts # Renderer + resize handling
+  useAnimationLoop.ts # Animation loop
