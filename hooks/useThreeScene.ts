@@ -1,13 +1,9 @@
+'use client';
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
 
-export interface ThreeScene {
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  cube: THREE.Mesh;
-}
-
-export function useThreeScene(): ThreeScene {
+export function useThreeScene() {
   return useMemo(() => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x202020);
@@ -20,7 +16,10 @@ export function useThreeScene(): ThreeScene {
     light.position.set(5, 5, 5);
     scene.add(light);
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const ambient = new THREE.AmbientLight(0x404040);
+    scene.add(ambient);
+
+    const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshStandardMaterial({ color: 0x44aa88 });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);

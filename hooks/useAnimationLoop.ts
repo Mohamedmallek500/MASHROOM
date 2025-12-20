@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 export function useAnimationLoop(
@@ -7,23 +9,22 @@ export function useAnimationLoop(
   camera: THREE.Camera,
   onFrame?: (delta: number) => void
 ) {
+  const frameRef = useRef<number>(0);
+
   useEffect(() => {
     if (!renderer) return;
 
     const clock = new THREE.Clock();
-    let frameId = 0;
 
-    const animate = () => {
+    const loop = () => {
       const delta = clock.getDelta();
       onFrame?.(delta);
       renderer.render(scene, camera);
-      frameId = requestAnimationFrame(animate);
+      frameRef.current = requestAnimationFrame(loop);
     };
 
-    animate();
+    loop();
 
-    return () => {
-      cancelAnimationFrame(frameId);
-    };
+    return () => cancelAnimationFrame(frameRef.current);
   }, [renderer, scene, camera, onFrame]);
 }

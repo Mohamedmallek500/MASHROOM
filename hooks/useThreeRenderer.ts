@@ -1,41 +1,42 @@
-import { useEffect, useRef } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 
 export function useThreeRenderer(
-  containerRef: React.RefObject<HTMLDivElement | null>
+  containerRef: React.RefObject<HTMLDivElement | null>,
+  camera: THREE.PerspectiveCamera
 ) {
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(
-      containerRef.current.clientWidth,
-      containerRef.current.clientHeight
-    );
+    const r = new THREE.WebGLRenderer({ antialias: true });
+    r.setPixelRatio(window.devicePixelRatio);
 
-    containerRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
-
-    const handleResize = () => {
+    const resize = () => {
       if (!containerRef.current) return;
-      renderer.setSize(
-        containerRef.current.clientWidth,
-        containerRef.current.clientHeight
-      );
+      const w = containerRef.current.clientWidth;
+      const h = containerRef.current.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      r.setSize(w, h);
     };
 
-    window.addEventListener('resize', handleResize);
+    resize();
+    containerRef.current.appendChild(r.domElement);
+    setRenderer(r);
+
+    window.addEventListener('resize', resize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      renderer.dispose();
-      containerRef.current?.removeChild(renderer.domElement);
-      rendererRef.current = null;
+      window.removeEventListener('resize', resize);
+      r.dispose();
+      containerRef.current?.removeChild(r.domElement);
+      setRenderer(null);
     };
-  }, [containerRef]);
+  }, [containerRef, camera]);
 
-  return rendererRef;
+  return renderer;
 }
