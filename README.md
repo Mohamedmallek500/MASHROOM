@@ -1,18 +1,22 @@
 # Three.js Editor – Next.js + TypeScript
 
-This project is a simplified reimplementation of the **Three.js Editor** example, built with **Next.js**, **TypeScript**, and **Three.js**.
+This project is a simplified reimplementation of the **Three.js Editor** example,
+built with **Next.js**, **TypeScript**, and **Three.js**.
 
 The goal is not to fully reproduce the entire editor UI, but to demonstrate:
-- clean architecture,
-- proper lifecycle management,
-- and a correct migration from imperative JavaScript to React + TypeScript.
+
+- Clean architecture
+- Proper Three.js lifecycle management in React
+- A correct migration from imperative JavaScript to React + TypeScript
+
+---
 
 ## Preview
 
-![Editor Preview](./resultat.png)
+![Three.js Editor Preview](./resultat.png)
 
-
-> The scene renders a basic Three.js setup (scene, camera, lighting, rotating cube) to validate rendering, animation, and lifecycle handling.
+> The scene renders a basic Three.js setup (scene, camera, lighting, rotating cube)
+> to validate rendering, animation, and lifecycle handling.
 
 ---
 
@@ -29,10 +33,10 @@ The goal is not to fully reproduce the entire editor UI, but to demonstrate:
 
 ```txt
 app/
-  page.tsx            # Server Component entry
+  page.tsx              # Server Component entry
 components/
-  ThreeEditor.tsx     # Client Component orchestrating the editor
+  ThreeEditor.tsx       # Client Component orchestrating the editor
 hooks/
-  useThreeScene.ts    # Scene, camera, objects setup
-  useThreeRenderer.ts # Renderer + resize handling
-  useAnimationLoop.ts # Animation loop
+  useThreeScene.ts      # Scene, camera, objects setup
+  useThreeRenderer.ts   # Renderer + resize handling
+  useAnimationLoop.ts   # Animation loop
