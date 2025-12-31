@@ -1,61 +1,58 @@
-# REPORT – Three.js Editor Migration
+## Adaptation du code à React et TypeScript
 
-## Issues in the Original Example
-
-The original Three.js editor code is highly imperative, with multiple responsibilities mixed together (scene creation, renderer setup, animation loop, resize handling).
-
-There is no explicit lifecycle management (mount / unmount), which causes issues when integrating with React.
-
-Three.js resources such as the renderer, geometries, materials, and event listeners are not clearly disposed, which can lead to memory leaks.
-
-Overall, the code is difficult to maintain or extend in a modern framework like Next.js.
+L’intégration de Three.js dans React repose sur l’encapsulation de sa logique impérative au sein de hooks dédiés.  
+Cette approche permet de concilier le modèle déclaratif de React avec le fonctionnement bas niveau de Three.js, tout en conservant un contrôle précis sur le cycle de vie des objets 3D.
 
 ---
 
-## Migration Approach
+## Structure de la scène
 
-The editor was reimplemented inside a Next.js + TypeScript project without directly copy-pasting the original JavaScript code.
+La scène est volontairement découpée en hooks spécialisés, chacun ayant une responsabilité unique :
 
-Official Three.js typings were used throughout the codebase, without relying on `any`.
+- **useThreeScene**  
+  Initialise la scène, la caméra, les lumières et les objets.  
+  L’initialisation est effectuée une seule fois grâce à `useMemo`, afin d’éviter toute recréation inutile.
 
-All Three.js logic was moved into Client Components and custom React hooks.
+- **useThreeRenderer**  
+  Gère le renderer Three.js, l’attachement du canvas au DOM, le redimensionnement de la fenêtre ainsi que le nettoyage des ressources.
 
-Global mutable logic was replaced with `useRef` to avoid unnecessary React re-renders.
+- **useAnimationLoop**  
+  S’occupe exclusivement de la boucle de rendu et de l’animation via `requestAnimationFrame`.
 
-Rendering, animation, and resize handling are executed exclusively on the client side.
+- **useOrbitControls**  
+  Encapsule la logique d’interaction utilisateur (rotation, zoom, déplacement de la caméra).
 
----
+Le composant React principal se limite à orchestrer ces hooks, sans contenir de logique métier ou graphique.
 
-## Architectural Decisions
+### Bénéfices de cette architecture
 
-To avoid placing all logic inside a single `useEffect`, responsibilities were clearly separated:
-
-- Scene setup (objects, lights, camera)
-- Renderer management (DOM attachment, resize handling)
-- Animation loop
-
-This separation makes the code more readable, easier to test, and simpler to evolve over time.
-
-The main component acts as an orchestrator rather than a monolithic container for all logic.
-
----
-
-## Trade-offs & Open Questions
-
-The full editor UI (menus, commands, undo/redo system) was not reimplemented.
-
-Advanced synchronization between React state and Three.js objects was intentionally kept minimal.
-
-The focus of this work was on architecture and lifecycle management rather than a complete feature-by-feature reproduction of the official editor.
+- Séparation claire des responsabilités  
+- Meilleure lisibilité du code  
+- Contrôle précis du cycle de vie des objets Three.js  
+- Évitement des re-renders React inutiles  
 
 ---
 
-## If This Were Production
+## Choix délibérés de non-implémentation
 
-Possible next improvements would include:
+Certaines fonctionnalités ont volontairement été exclues du périmètre :
 
-- Introducing a proper global state management solution for the editor
-- Implementing undo/redo and command handling
-- Optimizing performance for complex scenes
-- Adding automated tests and a more complete CI pipeline
-- Further structuring the codebase to support plugins or extensions
+- Reproduction complète de l’éditeur Three.js  
+  (sélection avancée, historique des actions, commandes, interface utilisateur complète)
+
+Ces éléments dépassent l’objectif du projet et alourdiraient inutilement l’architecture.
+
+---
+
+## Améliorations envisagées pour une version production
+
+Pour une utilisation en environnement de production, plusieurs axes d’amélioration sont identifiés :
+
+- Support de scènes ou de vues multiples  
+- Optimisations de performance pour les scènes complexes  
+- Séparation plus stricte entre :
+  - la logique d’édition
+  - la logique de rendu
+  - l’interface utilisateur
+
+---
